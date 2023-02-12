@@ -3,11 +3,9 @@ import mongoose from "mongoose";
 import multer from "multer";
 import cors from "cors";
 
-import { loginValidation, registerValidation } from "./validations/auth.js";
-import { postCreateValidation } from "./validations/post.js";
-
-import { UserController, PostController } from './controllers/index.js';
+import { UserController, PostController, CommentController } from './controllers/index.js';
 import { handleValidationErrors, checkAuth } from "./utils/index.js";
+import { commentCreateValidation, loginValidation, postCreateValidation, registerValidation } from "./validations/index.js";
 
 mongoose
   .connect('mongodb+srv://admin:qweasd@cluster1.xkld23a.mongodb.net/blog?retryWrites=true&w=majority')
@@ -42,12 +40,19 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 });
 
 app.get('/posts/tags', PostController.getLastTags);
+app.get('/posts/tag/:tag', PostController.getPostsByTag);
 
 app.get('/posts', PostController.getAll);
+app.get('/posts/popularity', PostController.getAllPopularity);
 app.get('/posts/:id', PostController.getOne);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, PostController.update);
+
+app.get('/comments', CommentController.getLastComments);
+app.get('/comments/:postId', CommentController.getPostComments);
+app.post('/comments/:postId', checkAuth, commentCreateValidation, handleValidationErrors, CommentController.create);
+
 
 app.listen(4444, (err) => {
   if (err) {
