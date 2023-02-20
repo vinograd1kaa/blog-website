@@ -50,6 +50,8 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, PostController.update);
 
 app.get('/comments', CommentController.getLastComments);
+app.delete('/comments', CommentController.remove);
+app.patch('/comments/:id', CommentController.update);
 app.get('/comments/:postId', CommentController.getPostComments);
 app.post('/comments/:postId', checkAuth, commentCreateValidation, handleValidationErrors, CommentController.create);
 

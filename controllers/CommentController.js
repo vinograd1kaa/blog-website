@@ -38,13 +38,61 @@ export const getPostComments = async (req, res) => {
 
 export const getLastComments = async (req, res) => {
   try {
-    const comments = await CommentSchema.find().exec();
+    const comments = await CommentSchema.find().limit(5).exec();
 
     res.json(comments);
   } catch (err) {
     console.log(err);
     res.status(500).json({
       message: 'Не удалось получить комментарии',
+    })
+  }
+}
+
+export const update = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+
+    await CommentSchema.updateOne(
+      {
+        _id: commentId,
+      },
+      {
+        comment: req.body.value,
+      },
+    );
+
+    res.json({
+      success: true
+    })
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось обновить статью',
+    })
+  }
+}
+
+export const remove = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+
+    console.log(req.body);
+
+    await CommentSchema.findOneAndDelete(
+      {
+        _id: commentId,
+      },
+      (err, doc) => {
+        res.json({
+          success: true
+        })
+      },
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить статьи',
     })
   }
 }
